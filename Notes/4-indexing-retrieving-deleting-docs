@@ -81,6 +81,6 @@ PUT {index}/_doc/{id}
 -- similarly for GET
 in my experience, PUT and POST both seem to overwrite the document rather than updating a particular field?
 -- you have to use _update route
-new way to do this: /{index}/_update/{id} with POST
+new way to do this: /{index}/_update/{id} with POST`
 if you try to update a missing document, you get an exception (it is not recreated)
-but you can still PUT it, and the version will be updated
+but you can still PUT it, and the version will be updated`

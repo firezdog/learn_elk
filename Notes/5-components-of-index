@@ -1,0 +1,41 @@
+ES creates index structure when we index documents
+example: business with buildings [address, floors, offices, loc [lat, long]]ad
+```
+PUT /business/_doc/110
+{
+    ...
+}
+```
+`GET /business` gets structure
+mappings gives types
+    mappings -- fields and types, e.g. long, float, object (for nested fields)
+    settings -- details about shards (next lecture)
+indexing a document with a new field -- price gets added (mapping is union of all fields -- and sub-fields!)
+indexing with a new type if a type has been defined does not work -- and index can support only one type
+    older versions < 6 did allow more than one type (see previous lectures)
+create new index for employees using _doc (more generic than a specific type) [name, title, salary_usd, hire_date]
+create new index for contracts [name, date_signed, employees_involved]
+to see indices, go to Discover
+    when I do this, I don't see my indices -- `GET _cat/indices` reveals the indices as "yellow"?
+        Intertubes say to set number of replicas to 0
+    you have to create an index pattern -- then you can see which indices are available
+    if you create an index pattern to much one source, it will show you the fields in that source (including meta-fields)
+to see all docs we can use _search endpoint -- it will give us all docs as "hits" along with some metadata
+_search alows us to specify arbitrarily complex queries e.g.
+```
+{
+    "query": {
+        "term": {
+            "address": "pen"
+        }
+    }
+}
+```
+^ returns all docs with address including / similar to "pen"
+match_all query gives us all docs
+wrench > copy as curl gives you a curl command
+    Content-Type: application/json
+    -d '<request_body>'
+we can query just as well from a browser as the curl in the terminal (and postman) -- because of the REST interface!
+`?pretty` parameter for reader friendliness
+course will focus on Kibana as opposed to terminal
