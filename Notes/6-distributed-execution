@@ -19,3 +19,33 @@ Index
     so for a cluster, we have many nodes through which the data is distributed
         any node in the cluster can serve the request
         every node knows where to find a given piece of information
+    every node knows the location of every document in the cluster
+How is a request served?
+    Go back to N1 { 1P 0R }, N2 { 0P, 1R } => Vehicles
+    Client sends index request to N2
+        N2 hashes the document id and determines where the document needs to go (compare a distributed hash table like chord)
+        Appropriate replica will also be distributed
+    Delete
+        The given node will send the command to the appropriate shard
+        seems like there will be some consistency model for the replicas
+    Get
+        Again, the node we send the GET to knows where the document requested lives -- using the ID hash
+        there will also be load balancing (this is where you would expect consistency issues to arise)
+        round robin load balancing
+What is a shard?
+    A Lucene index (search library upon which ES is built -- makes it distributed)
+    shards contain data
+    shards are composed of segments
+    segments are inverted indices
+        an inverted index contains for each token a list of documents that contain it
+        e.g. for each word in Shakespeare a list of plays in which that word occurs along with its locations
+    shard is the unit of separation
+How does indexing work?
+    slowest (cf retrieval)
+        data needs to be prepared and analyzed -- converting raw text into inverted index
+    when we send a document, what it contains is tokenized -- analysis -- e.g. eliminating white space
+        text is converted into tokens / terms => inverted index
+            seems like this would also involve communicating with the shards to see if any other documents contain those tokens
+        inverted index is sent to buffer
+        when buffer fills, its contents are committed to a segment => immutable inverted index
+            now searchable, permanent data
