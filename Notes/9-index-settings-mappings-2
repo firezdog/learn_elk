@@ -1,0 +1,29 @@
+Adding a doc to our index with one extra field -- what happens?
+    new field / type is inferred / structure is modified (mapping)
+We would like production to be strict and reject updates to the mapping
+    specified during index creation or after
+    "dynamic" -- false / strict
+        false: unmapped data will be ignored
+        strict: unmapped data will throw an error (good for logging)
+    PUT customers/_mapping/_doc { "dynamic": false } -- mistake in lecture, you have to use PUT
+        "dynamic" will show up at the top level under "mappings"
+        this does allow you to put in an empty document, though
+testing analyzers
+    see es documentation: analyzers -- https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html
+    POST _analyze { "analyzer": <analyzer>, "text": <text to test> }
+    result will give you a list of the analyzed tokens
+    some analyzers
+        whitespace -- splits on whitespace
+            the whitespace analyzer includes the period as part of the token (includes punctuation)
+        standard -- splits on whitespace and lowercases, removes punctuation
+        simple -- splits on non-letters, e.g. "fox374!;" => "fox" -- splitting on non-letters
+        english -- removes punctuation, ignores "the" (stop word), analyzes down to roots (some conjugations, plural vs singular)
+            there are other languages as well (semantics of different languages)
+    custom analyzer can also be defined
+        e.g. in docs std_folded
+        defined in "settings"
+        can filter things like asciifolding
+        you can test custom analyzers on the index in which they are defined via GET <index>/_analyze
+        analyzer will be applied both on indexing and searching
+
+reading: analyzers documentation, anatomy of an analyzer, testing analyzers
