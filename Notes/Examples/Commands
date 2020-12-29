@@ -9,3 +9,28 @@ PUT /{index}/_doc
 {
     <...properties...>
 }
+
+GET /courses/_search
+{
+    "query": {
+        "bool": {
+            "must": [
+                {"match": {"name": "accounting"}}
+            ],
+            "must_not": [
+                {"match": {"room": "E7"}}
+            ],
+            "minimum_should_match": 1,
+            "should": [
+                {"range": 
+                    {"students_enrolled": 
+                        {
+                            "gte": 10,
+                            "lte": 20
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
