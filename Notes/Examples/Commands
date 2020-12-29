@@ -1,0 +1,11 @@
+GET /{index}/_search
+{
+    "query": {
+        <...query...>
+    }
+}
+
+PUT /{index}/_doc
+{
+    <...properties...>
+}
