@@ -1,36 +1,134 @@
-GET /{index}/_search
-{
-    "query": {
-        <...query...>
-    }
-}
-
-PUT /{index}/_doc
-{
-    <...properties...>
-}
-
-GET /courses/_search
-{
-    "query": {
-        "bool": {
-            "must": [
-                {"match": {"name": "accounting"}}
-            ],
-            "must_not": [
-                {"match": {"room": "E7"}}
-            ],
-            "minimum_should_match": 1,
-            "should": [
-                {"range": 
-                    {"students_enrolled": 
-                        {
-                            "gte": 10,
-                            "lte": 20
-                        }
-                    }
-                }
-            ]
+query an index
+    GET /{index}/_search
+    {
+        "query": {
+            <...query...>
         }
     }
-}
+
+add an index mapping
+    PUT /{index}/_doc
+    {
+        <...properties...>
+    }
+
+complex query
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": {"name": "accounting"}}
+                ],
+                "must_not": [
+                    {"match": {"room": "E7"}}
+                ],
+                "minimum_should_match": 1,
+                "should": [
+                    {"range": 
+                        {"students_enrolled": 
+                            {
+                                "gte": 10,
+                                "lte": 20
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+filter context
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+                "filter": {
+                    "bool": {
+                        "must_not": [
+                            {"match": {"name": "computer"}},
+                            {"match": {"professor.name": "Bill"}}
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+queries with nested filter
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": {"name": "computer"}}
+                ],
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {"match": {"professor.name": "Bill"}}
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+                "must": [
+                    {"match": {"name": "computer"}}
+                ],
+                "filter": {
+                    "bool": {
+                        "should": [
+                            {"match": {"name": "science"}}
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+filter with range:
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+                "must": [{
+                    "range": {
+                        "students_enrolled": {"gte": 5}
+                    }
+                }],
+                "filter": {
+                    "bool": {
+                        "should": [
+                            {"match": {"professor.name": "Bill"}}
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+filter and query -- produces a mix of scored and unscored docs
+    GET /courses/_search
+    {
+        "query": {
+            "bool": {
+              "filter": {
+                "bool": {
+                  "must": [{
+                    "range": {
+                      "students_enrolled": {"gte": 1}
+                  }}]
+                }
+              },
+              "should": [
+                  {"match": {"room": "e3"}}
+              ]
+            }
+        }
+    }
