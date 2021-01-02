@@ -132,3 +132,49 @@ filter and query -- produces a mix of scored and unscored docs
             }
         }
     }
+
+bulk POST of docs (e.g. for seeding)
+    POST /<index>/_bulk
+
+sorting query
+    GET /<index>/_search
+    {
+        "sort": [
+            {"<field>": {"order": "<order, e.g. desc>"}}
+        ]
+    }
+
+count
+    GET /<index>/_count
+    {
+        <query>
+    }
+
+vs. simple aggregation for count
+    GET /<index>/_search
+    {
+        "aggs": {
+            <result_name>: {
+                "terms": {
+                    "field": <field e.g. make.keyword>
+                }
+            }
+        }
+    }
+
+aggregation example
+    GET /vehicles/_search
+    {
+        "aggs": {
+            "popular_cars": {
+                "terms": {"field": "make.keyword"},
+                "aggs": {
+                    "average_price": {
+                        "avg": {
+                            "field": "price"
+                        }
+                    }
+                }
+            }
+        }
+    }
