@@ -178,3 +178,71 @@ aggregation example
             }
         }
     }
+
+getting statistics
+    GET /vehicles/_search
+    {
+        "aggs": {
+            "popular_cars": {
+                "terms": {"field": "make.keyword"},
+                "aggs": {
+                    "price_statistics": {
+                        "stats": {
+                            "field": "price"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+range aggregations
+GET /vehicles/_search
+{
+  "aggs": {
+    "sell_statistics": {
+      "range": {
+        "field": "sold",
+        "ranges": [
+          {
+            "from": "2016-01-01",
+            "to": "2016-05-01"
+          },
+          {
+            "from": "2016-05-01",
+            "to": "2018-01-01"
+          }
+        ]
+      }
+    }
+  }
+}
+
+range aggregations with average price for each aggregation (nested aggregation)
+GET /vehicles/_search
+{
+  "aggs": {
+    "sell_statistics": {
+      "aggs": {
+        "price_stats": {
+          "stats": {
+            "field": "price"
+          }
+        }
+      },
+      "range": {
+        "field": "sold",
+        "ranges": [
+          {
+            "from": "2016-01-01",
+            "to": "2016-06-01"
+          },
+          {
+            "from": "2016-06-01",
+            "to": "2018-01-01"
+          }
+        ]
+      }
+    }
+  }
+}
