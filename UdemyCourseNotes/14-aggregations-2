@@ -1,0 +1,16 @@
+more aggs (continuation from previous lecture)
+how to get all of the statistics?
+    consolidation with "stats"
+    buckets and metrics
+        buckets group fields together (by token / value?)
+            by make or say by date sold
+            define a range bucket {range: {field, ranges}}
+                ranges use "from" and "to" with date YYYY-MM-DD
+                response
+                    we get the range of dates and the number of docs
+                what is the average price of the vehicles sold during the different date ranges
+                    nested aggs
+    remember that nested aggs go under the name of the aggs under which they are nested
+        nested metrics fall under the scope of the metric within which that are nested
+        metric? -- is that what organizes the buckets?
+aggregation scoping -- limiting aggregations to a specific query

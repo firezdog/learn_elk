@@ -1,0 +1,21 @@
+This lecture -- how to download and set up logstash
+Logstash: data processing pipeline engine, ingest data from many sources
+Stages of pipeline
+    Data sources => inputs (I) => filters (II) => outputs (III) => Data destinations (e.g. ElasticSearch)
+    configured using jruby, json like language
+installing on linux with apt-get -- https://www.elastic.co/guide/en/logstash/7.10/installing-logstash.html#_apt
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    sudo apt-get install apt-transport-https
+    echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+    etc. (see website)
+specifying a test config
+    ./logstash/bin/logstash -e 'input { stdin {}} output { stdout {}}' -- test whether logstash works
+        whatever we type will be sent back to us (tests that logstash is working, uses stdin and stdout)
+        logs will be saved in our logstash directory
+    (digression) unrecognized VM option occurs if the java version is incompatible, we need 8
+        find where java is installed
+        it may have both jdk 10 and jdk 8
+        we need path to point to 8 as well
+        change path in .bashprofile (or .bashrc or whatever) using vi or nano
+            export JAVA_HOME=<path to version 8>
+next lecture: how to configure logstash

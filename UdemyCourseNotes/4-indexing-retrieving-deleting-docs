@@ -1,0 +1,86 @@
+Topic -- elasticsearch CRUD
+elasticsearch uses indexes vs. tables (SQL)
+    our goal: index vehicles, docs (individual vehicles)
+    rows are like documents
+    columns are like fields
+    < ES5 tables were "types", ES6 is moving away from types, ES7 will eliminate
+example: vehicles (index), where individual cars
+indexing: inserting a doc into elasticsearch
+defining an index name: vehicles
+    PUT /{index}/{type}/{id}
+    {
+        "field1": "value1",
+        "field2": "value2",
+        ...
+    }
+    -- PUT /vehicles/car/123 {
+        "make": "honda",
+        "mileage": 8700,
+        "color": "red"
+    }
+    deprecation of types in ES6 -- but type would be subdivision of index
+        different kinds of vehicles eg (cars, trucks, boats)
+        in newer versions we can no longer have multiple types, only one :P
+        all types will be gone from ES7
+    note what follows PUT is JSON
+each document must have a unique id -- ES will automatically generate otherwise
+steps
+    kibana server and elasticsearch must be running
+    load kibana > dev tools (where we do most "coding")
+    PUT /vehicles/car/123 {
+        "make": "Honda",
+        "color": "black",
+        "HP": 250,
+        "mileage": 24000,
+        "price": 19300.97
+    }
+fields in the response
+    _index -- where data went
+    _type (to be deprecated)
+    _id -- unique identifier
+    _version -- of the document, incremented with updates (overwriting)
+        above are all meta-fields
+    _shards to be discussed
+    created field to be deprecated, echoes _result field
+running the command again
+    version will be incremented
+    result will go from created to updated (even if there was no data change)
+GET 
+    /vehicles/car/123 retrieves the document along with meta fields
+    _source field contains the document
+    for nonexistent document, found will be false
+    having the wrong type with the right id will also not be found
+if we only want _source, we can specify GET /vehicles/car/123/_source -- no meta-fields
+takeaway: elasticsearch uses a REST interface and uses JSON
+HEAD -- checks for existence, success = 200 OK
+document is the most granular level -- you can't change specific fields
+    even though elasticsearch has an update API, using POST
+POST /vehicles/car/123/_update
+{
+    "doc: {
+        ... (fields to be updated)
+    }
+}
+not really a difference between PUT -- just that elasticsearch takes care of the other details, reindexes the doc
+you can add new fields as well -- new fields added, existing fields over-written
+i assume if you PUT only a partial update, it would erase the other fields
+DELETE /vehicles/car/123 gives result -- deleted, version number increments -- if we GET the document, found field will be false
+    but what if we then index a new document?  it still exists... would the version number go up again?
+    ES marks the doc as deleted, deleted documents are occasionally purged
+    we can also delete an index
+        deleting the type? -- error (no handler or whatever)
+GET on whole index, response will give the structure (inferred) for that index (but what if the docs are wildly inconsistent?)
+exercise: HR index with employee type
+
+for non-deprecated use of PUT:
+
+PUT {index}/_doc/{id}
+{
+    ...
+}
+-- similarly for GET
+in my experience, PUT and POST both seem to overwrite the document rather than updating a particular field?
+-- you have to use _update route
+new way to do this: /{index}/_update/{id} with POST`
+if you try to update a missing document, you get an exception (it is not recreated)
+but you can still PUT it, and the version will be updated`
