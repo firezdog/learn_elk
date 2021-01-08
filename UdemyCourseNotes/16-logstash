@@ -1,0 +1,32 @@
+How to ingest logs into elasticsearch using logstash
+download logs file: `curl https://raw.githubusercontent.com/elastic/elk-index-size-tests/master/logs.gz --output logs.gz; gzip -d logs.gz` (60MB file)
+create data/logs/logs(.txt?) and data/apache.conf
+    input (file)
+        various possiblities, file is builtin
+    filter
+        various plugins
+        we use grok, mutate, date, geoip, useragent
+            grok: regex matcher -- we use predefined COMBINEDAPACHELOG (see grokpatterns: combinedapachelog)
+            mutate: convert types
+            date: format dates
+            geoip: find ip address
+            useragent: what was being used
+        these plugins allow us to parse information from the logs into logstash
+        additional fields will be deduced by logstash -- they are not originally present in the log (e.g. country, longitude, latitude)
+        parser and interpreter
+    output -- (1) stdout ... for each line -- and (2) elasticsearch (multiple outputs at the same time)
+we will run logstash with the configuration as in the previous lecture
+anatomy of a config file (logstash 6.2)
+    input plugins
+        rabbitmq, redis, amazon s3, salesforce -- we used builtin file
+        information about each type is found in ES docs
+    output plugins
+    filter plugins
+        csv, date, grok, geoip
+            date options including the match config we used
+launch logstash with apache.conf: ./logstash/bin/logstash -f data/apache.conf
+we will see ... and then the data will populate in kibana
+    note: mutate is a filter independent of grok!
+    absolute paths required
+in index management we will see logstash
+    e.g. GET logstash-2021.01.08-000001/_search to see what got indexed
