@@ -1,1 +1,29 @@
 confirm we got 300,000 docs via logstash into ES
+in the example, there are 31 indices -- we in fact seem to have only one index?
+    probably a version difference?
+we can use ES endpoint: localhost:9200/logstash-*/_count
+you can close out of logstash at any time
+kibana: management => index_management (now under data => index management)
+we can click on an index and see the mapping
+logtstash deduced a great deal of information that was inferred
+tabs
+    discover: helps to explore the data -- query, filter, inspect document structure
+    visualize: build visualizations (bar charts etc.)
+we need to specify the index pattern, e.g. logstash-* then pick @timestamp, create index pattern
+we can now see all the fields in the index
+no data displays in discover because it is from way back -- we can update to say 2013 and then the familiar view (early days of Zoro) appears
+    choose e.g. 2014 May to 2014 June
+specifies what the log looks like on a particular day (the actual data that goes to the fields) -- each entry is a doc
+we can pick what fields we want and look at analytics for the various fields
+all the extra information came from logstash filters (geoip)
+creating a visualization is now possible
+easy example: data table
+we can now select aggregations
+    say terms aggregating over cities (under split rows)
+    we see how many came from each city
+pie chart
+    spite slices on terms on field city_name
+we can also present the data on a dashboard
+save visualization e.g. pie_chart_cities
+now we can create a dashboard and add it to the dashboard
+logstash indexes the documents, then after choosing a pattern we can filter and visualize the data
